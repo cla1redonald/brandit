@@ -4,8 +4,12 @@
   "plugins": [
     {
       "name": "brandit",
-      "source": ".",
-      "description": "AI brand consultant for MVPs. Generates brand identity and design system foundations."
+      "description": "AI brand consultant for MVPs. Generates brand identity and design system foundations.",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/cla1redonald/brandit.git"
+      },
+      "homepage": "https://github.com/cla1redonald/brandit"
     }
   ]
 }
