@@ -5,7 +5,5 @@
   "author": { "name": "Claire Donald" },
   "homepage": "https://github.com/cla1redonald/brandit",
   "license": "MIT",
-  "keywords": ["brand", "identity", "design-system", "mvp", "logo", "tokens"],
-  "commands": "./commands/",
-  "agents": "./agents/"
+  "keywords": ["brand", "identity", "design-system", "mvp", "logo", "tokens"]
 }
