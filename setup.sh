@@ -70,20 +70,31 @@ install_brandit() {
   cp "$SETTINGS_FILE" "$SETTINGS_FILE.bak"
   success "Backed up settings to settings.json.bak"
 
-  jq --arg path "$BRANDIT_PATH" '
-    .extraKnownMarketplaces.brandit.source = {
+  # Symlink into local-plugins directory (same pattern as ProveIt)
+  local LOCAL_PLUGINS="$SETTINGS_DIR/local-plugins"
+  mkdir -p "$LOCAL_PLUGINS"
+
+  if [[ -L "$LOCAL_PLUGINS/brandit" ]]; then
+    rm "$LOCAL_PLUGINS/brandit"
+  fi
+  ln -s "$BRANDIT_PATH" "$LOCAL_PLUGINS/brandit"
+  success "Symlinked BrandIt into $LOCAL_PLUGINS/"
+
+  # Ensure local marketplace is registered and brandit is enabled
+  jq '
+    .extraKnownMarketplaces.local.source = {
       "source": "directory",
-      "path": $path
+      "path": ($ENV.HOME + "/.claude/local-plugins")
     } |
-    .enabledPlugins["brandit@brandit"] = true
+    .enabledPlugins["brandit@local"] = true
   ' "$SETTINGS_FILE" > "$SETTINGS_FILE.tmp"
 
   mv "$SETTINGS_FILE.tmp" "$SETTINGS_FILE"
-  success "Registered BrandIt plugin at $BRANDIT_PATH"
+  success "Registered BrandIt plugin"
 
   local ok=1
-  jq -e '.extraKnownMarketplaces.brandit.source.path' "$SETTINGS_FILE" >/dev/null 2>&1 || ok=0
-  jq -e '.enabledPlugins["brandit@brandit"] == true' "$SETTINGS_FILE" >/dev/null 2>&1 || ok=0
+  jq -e '.enabledPlugins["brandit@local"] == true' "$SETTINGS_FILE" >/dev/null 2>&1 || ok=0
+  test -L "$LOCAL_PLUGINS/brandit" || ok=0
 
   if [[ $ok -eq 1 ]]; then
     success "Verified installation"
@@ -115,10 +126,16 @@ uninstall_brandit() {
   cp "$SETTINGS_FILE" "$SETTINGS_FILE.bak"
   success "Backed up settings to settings.json.bak"
 
+  # Remove symlink
+  local LOCAL_PLUGINS="$SETTINGS_DIR/local-plugins"
+  if [[ -L "$LOCAL_PLUGINS/brandit" ]]; then
+    rm "$LOCAL_PLUGINS/brandit"
+    success "Removed symlink from $LOCAL_PLUGINS/"
+  fi
+
+  # Remove from enabled plugins
   jq '
-    del(.extraKnownMarketplaces.brandit) |
-    del(.enabledPlugins["brandit@brandit"]) |
-    if .extraKnownMarketplaces == {} then del(.extraKnownMarketplaces) else . end |
+    del(.enabledPlugins["brandit@local"]) |
     if .enabledPlugins == {} then del(.enabledPlugins) else . end
   ' "$SETTINGS_FILE" > "$SETTINGS_FILE.tmp"
 
