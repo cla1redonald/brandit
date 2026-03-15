@@ -1,0 +1,11 @@
+{
+  "name": "brandit",
+  "description": "AI brand consultant for MVPs. Generates brand identity and design system foundations — name, logo, colours, fonts, tone of voice, and guidelines.",
+  "version": "0.1.0",
+  "author": { "name": "Claire Donald" },
+  "homepage": "https://github.com/cla1redonald/brandit",
+  "license": "MIT",
+  "keywords": ["brand", "identity", "design-system", "mvp", "logo", "tokens"],
+  "commands": "./commands/",
+  "agents": "./agents/"
+}

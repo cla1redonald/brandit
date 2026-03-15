@@ -1,0 +1,11 @@
+{
+  "name": "brandit",
+  "owner": { "name": "Claire Donald" },
+  "plugins": [
+    {
+      "name": "brandit",
+      "source": ".",
+      "description": "AI brand consultant for MVPs. Generates brand identity and design system foundations."
+    }
+  ]
+}
